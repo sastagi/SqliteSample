@@ -2,11 +2,16 @@ package com.sastagi.sqlitesample.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.sastagi.sqlitesample.model.CompanyItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sastagi on 3/12/16.
@@ -44,6 +49,8 @@ public class CompanyDatabaseHelper extends SQLiteOpenHelper {
         return sInstance;
     }
 
+
+    @WorkerThread
     // Insert a post into the database
     public void addPost(CompanyItem companyItem) {
         // Create and/or open the database for writing
@@ -71,6 +78,40 @@ public class CompanyDatabaseHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public List<CompanyItem> getAllCompanies() {
+        List<CompanyItem> companies = new ArrayList<>();
+
+        // SELECT * FROM POSTS
+        // LEFT OUTER JOIN USERS
+        // ON POSTS.KEY_POST_USER_ID_FK = USERS.KEY_USER_ID
+        String COMPANY_SELECT_QUERY ="SELECT * FROM "+
+                        TABLE_COMPANIES;
+
+        // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
+        // disk space scenarios)
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(COMPANY_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    CompanyItem newCompany = new CompanyItem();
+                    newCompany.setTitle(cursor.getString(cursor.getColumnIndex(COMPANY_TITLE)));
+                    newCompany.setSubtitle(cursor.getString(cursor.getColumnIndex(COMPANY_SUBTITLE)));
+                    newCompany.setEarnings(cursor.getString(cursor.getColumnIndex(COMPANY_EARNINGS)));
+                    companies.add(newCompany);
+
+                } while(cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d("TEST", "Error while trying to get posts from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return companies;
     }
 
     @Override
