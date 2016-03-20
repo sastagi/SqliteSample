@@ -1,4 +1,4 @@
-package com.sastagi.sqlitesample;
+package com.sastagi.sqlitesample.SyncAdapter;
 
 import android.app.Service;
 import android.content.Intent;
