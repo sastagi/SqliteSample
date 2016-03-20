@@ -22,6 +22,15 @@
         <service
             android:name=".Networking.FetchCompanies"
             android:exported="false"/>
+        <service
+            android:name=".AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
     </application>
 
 </manifest>
