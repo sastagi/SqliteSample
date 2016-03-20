@@ -31,6 +31,11 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <provider
+            android:name=".SyncAdapter.StubProvider"
+            android:authorities="com.sastagi.sqlitesample.datasync.provider"
+            android:exported="false"
+            android:syncable="true"/>
     </application>
 
 </manifest>
